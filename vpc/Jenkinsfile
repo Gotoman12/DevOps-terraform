@@ -27,8 +27,20 @@ pipeline{
         stage('Approval'){
             steps{
                 script{
-                    input message: "Do you want to proceed with the Terraform action?",
+                    input message: "Do you want to proceed with Terraform ${params.TerraformAction}?"
                 }
+            }
+        }
+        stage('Terraform Apply / Destroy'){
+            steps{
+                sh '''
+                cd vpc
+                if [ "${TerraformAction}" = "apply" ]; then
+                    terraform apply tfplan
+                else
+                    terraform destroy -auto-approve
+                fi
+                '''
             }
         }
     }
