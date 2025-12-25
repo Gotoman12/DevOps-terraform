@@ -37,7 +37,7 @@ resource "aws_route_table" "project-java-rt" {
     vpc_id = aws_vpc.project_java.id
 
     tags = {
-      Name: project-java-rt
+      Name: "project-java-rt"
     }
 }
 
