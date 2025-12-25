@@ -45,7 +45,7 @@ resource "aws_route_table" "project-java-rt" {
 resource "aws_internet_gateway" "project-java-igw" {
   vpc_id = aws_vpc.project_java.id
   tags = {
-    Name: project-java-igw
+    Name: "project-java-igw"
   }
 }
 
