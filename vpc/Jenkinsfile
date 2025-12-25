@@ -22,8 +22,15 @@ pipeline{
                 sh 'cd vpc/; terraform init'
                 sh 'cd vpc/; terraform validate'
                 sh 'cd vpc/; terraform plan'
+            }   
+        }
+        stage('Approval'){
+            steps{
+                script{
+                    input message: "Do you want to proceed with the Terraform action?",
+                    parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
+                }
             }
-               
         }
     }
 }
