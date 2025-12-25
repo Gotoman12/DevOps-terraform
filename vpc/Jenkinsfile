@@ -21,7 +21,7 @@ pipeline{
             steps{
                 sh 'cd vpc/; terraform init'
                 sh 'cd vpc/; terraform validate'
-                sh 'cd vpc/; terraform apply tfplan'
+                sh 'cd vpc/; terraform plan -out=tfplan'
             }   
         }
         stage('Approval'){
