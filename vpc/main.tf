@@ -68,3 +68,13 @@ resource "aws_route_table_association" "public2_association" {
     route_table_id = aws_route_table.project-java-rt.id
     subnet_id = aws_subnet.project_java-subnet-public2.id
 }
+
+resource "aws_instance" "my-instance1" {
+    ami = "ami-0ecb62995f68bb549"
+    instance_type = "t2.small"
+    security_groups = "sg-0e5cd0d51b5f2c17d"
+  
+   tags = {
+        Name = "Terraform-ec2"
+    }
+}
