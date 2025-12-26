@@ -69,6 +69,7 @@ resource "aws_route_table_association" "public2_association" {
     subnet_id = aws_subnet.project_java-subnet-public2.id
 }
 
+# EC2 Creation
 resource "aws_instance" "my-instance1" {
     ami = "ami-0ecb62995f68bb549"
     instance_type = "t3.small"
