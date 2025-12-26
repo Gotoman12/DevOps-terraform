@@ -71,7 +71,7 @@ resource "aws_route_table_association" "public2_association" {
 
 resource "aws_instance" "my-instance1" {
     ami = "ami-0ecb62995f68bb549"
-    instance_type = "t2.small"
+    instance_type = "t3.small"
     vpc_security_group_ids = ["sg-0e5cd0d51b5f2c17d"]
   
    tags = {
