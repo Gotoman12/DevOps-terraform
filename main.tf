@@ -40,8 +40,8 @@ resource "aws_internet_gateway" "arjun_ig" {
 }
 resource "aws_route" "route_associate" {
   route_table_id=aws_route_table.default_rt.id
+   destination_cidr_block="0.0.0.0/0"
   gateway_id = aws_internet_gateway.arjun_ig.id
-  destination_cidr_block="0.0.0.0/0"
 }
 
 resource "aws_route_table_association" "sub1-assocaition" {
@@ -92,7 +92,7 @@ resource "aws_security_group" "amz-sg" {
 resource "aws_instance" "master-node" {
     ami = "ami-068c0051b15cdb816"
     instance_type = "t3.small"
-    subnet_id = aws_subnet.pub1-subnet
+    subnet_id = aws_subnet.pub1-subnet.id
     security_groups = [aws_security_group.amz-sg.id]
     key_name = "ubuntu-key"
     #key_name = "ubuntu-key"
