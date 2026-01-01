@@ -57,25 +57,27 @@ resource "aws_route_table_association" "sub2-assocaition" {
 resource "aws_security_group" "amz-sg" {
     name = "amz-security"
     vpc_id = aws_vpc.arjun-vpc.id
-    ingress = {
-        protocol = "-1"
-        from_port = 0
-        to_port = 6000
-        cidr_blocks	= ["0.0.0.0/0"]
-    }
     ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allow SSH from anywhere (restrict in production)
-  }
+  from_port   = 22
+  to_port     = 22
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+}
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allow HTTP from anywhere
-  }
+ingress {
+  from_port   = 80
+  to_port     = 80
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+ingress {
+  from_port   = 0
+  to_port     = 6000
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
     egress = {
         protocol = "-1"
         from_port = 0
