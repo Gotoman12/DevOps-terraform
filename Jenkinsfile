@@ -33,7 +33,7 @@ pipeline{
         stage("apply/destroy"){
             steps{
                 sh '''
-                if ["${params.terraformAction}" = "apply" ];then
+                if ["${terraformAction}" = "apply" ];then
                   terraform apply tfplan
                 else
                      terraform destroy -auto-approve    
