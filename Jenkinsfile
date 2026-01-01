@@ -18,7 +18,7 @@ pipeline{
             stage("terrform-plan"){
                 steps{
                     sh 'terraform init'
-                    sh 'terrafrom plan -out=tfplan'
+                    sh 'terraform plan -out=tfplan'
                     sh 'terraform show -no-color tfplan > tfplan.txt'
                 }
             }
