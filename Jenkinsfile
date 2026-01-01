@@ -26,14 +26,14 @@ pipeline{
             steps{
                 script{
                     def plan = readFile 'tfplan.txt'
-                    input message: "Do you want to proceed with Terraform ${params.TerraformAction}?"
+                    input message: "Do you want to proceed with Terraform ${params.terraformAction}?"
                 }
             }
         }
         stage("apply/destroy"){
             steps{
                 sh '''
-                if ["${TerraformAction}" = "apply" ];then
+                if ["${params.terraformAction}" = "apply" ];then
                   terraform apply tfplan
                 else
                      terraform destroy -auto-approve    
