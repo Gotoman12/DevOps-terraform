@@ -1,43 +1,53 @@
-pipeline{
+pipeline {
     agent any
 
-    parameters{
-       choice(name: 'terraformAction',choices: ['apply','destroy'],description: 'Choose your terraform action')
+    parameters {
+        choice(
+            name: 'terraformAction',
+            choices: ['apply', 'destroy'],
+            description: 'Choose your terraform action'
+        )
     }
 
-    environment{
-          AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
-          AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
-        stages{
-            stage("git-checkout"){
-                steps{
-                       git url:"https://github.com/Gotoman12/DevOps-terraform.git",branch:"eks"
-                }
+
+    stages {
+
+        stage("Git Checkout") {
+            steps {
+                git url: "https://github.com/Gotoman12/DevOps-terraform.git", branch: "eks"
             }
-            stage("terrform-plan"){
-                steps{
-                    sh 'terraform init'
-                    sh 'terraform plan -out=tfplan'
-                    sh 'terraform show -no-color tfplan > tfplan.txt'
-                }
+        }
+
+        stage("Terraform Init & Plan") {
+            steps {
+                sh '''
+                  terraform init
+                  terraform plan -out=tfplan
+                  terraform show -no-color tfplan > tfplan.txt
+                '''
             }
-            stage('Approval'){
-            steps{
-                script{
-                    def plan = readFile 'tfplan.txt'
+        }
+
+        stage("Approval") {
+            steps {
+                script {
                     input message: "Do you want to proceed with Terraform ${params.terraformAction}?"
                 }
             }
         }
-        stage("apply/destroy"){
-            steps{
+
+        stage("Apply / Destroy") {
+            steps {
                 sh '''
-                if ["${terraformAction}" = "apply" ];then
-                  terraform apply tfplan
-                else
-                     terraform destroy -auto-approve    
-                fi
+                  if [ "${terraformAction}" = "apply" ]; then
+                    terraform apply -auto-approve tfplan
+                  else
+                    terraform destroy -auto-approve
+                  fi
                 '''
             }
         }
