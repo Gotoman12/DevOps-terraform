@@ -2,5 +2,5 @@
 variable "bucket_name" {
   description = "S3 bucket name"
   type        = string
-  default     = "terraform-state-my-bucket"
+  default     = "terraform-arjunckm-my-bucket"
 }
