@@ -134,9 +134,6 @@ resource "aws_s3_bucket" "arjun_ckm" {
   bucket              = var.bucket_name
   object_lock_enabled = true
 
-  lifecycle {
-    prevent_destroy = true
-  }
 
   tags = {
     Name = "arjun-ckm"
