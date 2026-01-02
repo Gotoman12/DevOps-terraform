@@ -41,13 +41,15 @@ pipeline{
             }
         }
         stage("Apply/Destroy"){
-            sh '''
-            if ["${TerraformAction}" = "apply" ];then
-            terraform apply DB/tfplan
-            else
-            terraform destroy -auto-approve
-            fi
-            '''
+            steps{
+                    sh '''
+                        if ["${TerraformAction}" = "apply" ];then
+                        terraform apply DB/tfplan
+                        else
+                        terraform destroy -auto-approve
+                        fi
+                        '''
+            }
         }
     }
 }
