@@ -130,6 +130,27 @@ resource "aws_instance" "master_node" {
   }
 }
 
+resource "aws_s3_bucket" "arjun_ckm" {
+  bucket              = var.bucket_name
+  object_lock_enabled = true
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  tags = {
+    Name = "arjun-ckm"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "versioning" {
+    bucket = aws_s3_bucket.arjun_ckm.id
+    versioning_configuration {
+      status = "Enabled"
+    }
+  
+}
+
 # Output
 output "instance_public_ip" {
   value = aws_instance.master_node.public_ip
