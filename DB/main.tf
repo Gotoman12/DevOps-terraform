@@ -13,7 +13,7 @@ resource "aws_db_instance" "example" {
   engine              = "mysql"
   engine_version      = "8.0"
   allocated_storage   = 20
-  instance_class      = "db.t3.micro"
+  instance_class      = "db.t4g.micro"
 
   db_name             = "database1"
   username            = "admin"
