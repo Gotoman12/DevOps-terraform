@@ -51,5 +51,10 @@ pipeline {
                 '''
             }
         }
+         stage("Approval") {
+            steps {
+                   sh 'aws s3 cp terraform.tfstate s3://terraform-arjunckm-my-bucket/terraform/backup'
+            }
+        }
     }
 }
