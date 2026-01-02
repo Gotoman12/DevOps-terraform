@@ -1,0 +1,53 @@
+pipeline{
+    agent any
+
+    parameters{
+        choice(
+            name:"TerraformAction", 
+            choices:["apply",'destroy'],
+            description:"Choose your terraform action")
+    }
+
+    stages{
+        stage("git-checkout"){
+           steps{
+             git url: "https://github.com/Gotoman12/DevOps-terraform.git", branch: "eks"
+           }
+        }
+
+        stage("Plan"){
+            steps{
+                dir('DB'){
+                    sh '''
+                       terraform init
+                       terraform plan -out=tfplan
+                       terraform show -no-color tfplan > tfplan.txt
+                    '''
+                }
+            }
+        }
+       stage('Approval'){
+            steps{
+                script{
+                    def plan = readFile 'DB/tfplan.txt'
+                    input message: "Do you want to proceed with the Terraform action ${params.TerraformAction}?",
+                    parameters: [
+                    text
+                    (name: 'Plan',
+                     description: 'Please review the plan', 
+                     defaultValue: plan)
+                     ]
+                }
+            }
+        }
+        stage("Apply/Destroy"){
+            sh '''
+            if ["${TerraformAction}" = "apply" ];then
+            terraform apply DB/tfplan
+            else
+            terraform destroy -auto-approve
+            fi
+            '''
+        }
+    }
+}
