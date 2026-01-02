@@ -2,12 +2,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-variable "db_password" {
-  description = "RDS admin password"
-  type        = string
-  sensitive   = true
-}
-
 resource "aws_db_instance" "example" {
   identifier          = "mysql-db"
   engine              = "mysql"
