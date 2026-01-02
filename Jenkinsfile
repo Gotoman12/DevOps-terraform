@@ -51,10 +51,5 @@ pipeline {
                 '''
             }
         }
-         stage("push tfstate to s3") {
-            steps {
-                sh 'aws s3 cp s3://'
-            }
-        }
     }
 }
