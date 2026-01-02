@@ -56,5 +56,22 @@ pipeline{
                 }
             }
         }
+        stage("Apply / Destroy") {
+            steps {
+                dir("DB"){
+                     sh '''
+                  if [ "$TerraformAction" = "apply" ]; then
+                    terraform apply -auto-approve tfplan
+                    else
+                    terraform destroy -auto-approve
+                    fi
+                '''
+                }
+            }
+        }
+        stage("push to s3")
+        steps{
+            sh 'aws s3 cp tterraform.tfstate s3://arjun-ckm/db/backups/'
+        }
     }
 }
