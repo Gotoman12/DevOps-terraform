@@ -45,15 +45,15 @@ pipeline{
         }
         stage("Apply / Destroy") {
             steps {
-                sh '''
-                  if [ "${TerraformAction}" = "apply" ]; then
-                    cd DB
+                dir("DB"){
+                     sh '''
+                  if [ "$TerraformAction" = "apply" ]; then
                     terraform apply -auto-approve tfplan
-                  else
-                    cd DB
+                    else
                     terraform destroy -auto-approve
-                  fi
+                    fi
                 '''
+                }
             }
         }
     }
