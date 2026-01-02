@@ -5,7 +5,7 @@ provider "aws" {
 resource "aws_db_instance" "example" {
     engine              = "mysql"
     allocated_storage   = 10
-    instance_class      = "db.t2.micro"
+    instance_class      = "db.t4g.micro"
     db_name                = "database-1"
     username            = "admin"
     password            = "${var.db_password}"
