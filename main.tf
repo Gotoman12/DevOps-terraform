@@ -152,3 +152,7 @@ resource "aws_s3_bucket_versioning" "versioning" {
 output "instance_public_ip" {
   value = aws_instance.master_node.public_ip
 }
+
+output "s3_bucket_arn" {
+    value = aws_s3_bucket.arjun_ckm.arn
+}
