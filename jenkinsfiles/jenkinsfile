@@ -1,0 +1,23 @@
+pipeline{
+    agent any
+
+    environment{
+        IMAGE = "arjunckm/java-dev:${BUILD_NUMBER}"
+        REGION = "us-east-1"
+        CLUSTER_NAME= "JAVA_APP_CLUSTER"
+        NAMESPACE = "devenv"
+    }
+
+    tools{
+        jdk 'java-17'
+        maven "maven"
+    }
+
+    stages{
+        stage("git_checkout"){
+            steps{
+                git url="",branch="main"
+            }
+        }
+    }
+}

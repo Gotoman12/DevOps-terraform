@@ -136,3 +136,10 @@ skip_final_snapshot = true
 publicly_accessible = true
   
 }
+
+output "aws_instance_public_ip" {
+  value = aws_instance.app-server.public_ip
+}
+output "aws_instance_public_ip" {
+  value = aws_instance.web-server.public_ip
+}
