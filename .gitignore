@@ -1,0 +1,47 @@
+# Local Terraform directories
+**/.terraform/*
+
+# State files
+*.tfstate
+*.tfstate.*
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Variable files with secrets
+*.auto.tfvars
+*.auto.tfvars.json
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI config
+.terraformrc
+terraform.rc
+
+# Optional: local plans
+*.tfplan
+
+# AWS CLI / SDK local install files
+.aws/
+aws-cli/
+amazon-cloudwatch-agent/
+aws-install/
+
+# Credentials and config
+.aws/credentials
+.aws/config
+
+# Temporary or generated files
+*.log
+*.tmp
+*.cache
+
+# Deployment or build artifacts
+**/dist/
+build/
+out/
