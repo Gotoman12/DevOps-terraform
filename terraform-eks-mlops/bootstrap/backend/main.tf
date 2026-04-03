@@ -2,12 +2,12 @@ terraform {
   required_version = "~> 1.12"
   required_providers {
     aws = {
-        source = "hashicrop/aws"
+        source = "hashicorp/aws"
         version = "~> 6.0"
     }
     random ={
-        source = "hashicrop/aws"
-        version = "~> 6.0"
+        source = "hashicorp/random"
+        version = "~> 3.0"
     }
   }
 }
@@ -24,16 +24,19 @@ resource "random_string" "s3-string" {
 
 
 module "dynamodb-table" {
-source  = "terraform-aws-modules/dynamodb-table/aws"
-version = "5.5.0"
-name = "finance-mlops-tf-lock"
-billing_mode = "PAY_PER_REQUEST"
-hash_key = "LockId"
+  source       = "terraform-aws-modules/dynamodb-table/aws"
+  version      = "5.5.0"
+  name         = "finance-mlops-tf-lock"
+  billing_mode = "PAY_PER_REQUEST"
 
-attributes = {
-    name = "LockId"
-    type = "S"
-  }
+  hash_key = "LockID"
+
+  attributes = [
+    {
+      name = "LockID"
+      type = "S"
+    }
+  ]
 }
 
 resource "aws_s3_bucket" "tf_state" {
