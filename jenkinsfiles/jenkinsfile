@@ -60,7 +60,7 @@ pipeline {
         expression { params.TerraformApproval == 'Apply' }
       }
       steps {
-        dir('bootstrap/backend') {
+        dir('terraform-eks-mlops/envs/${params.ENV}') {
           sh 'terraform apply -input=false -auto-approve tfplan'
         }
       }
