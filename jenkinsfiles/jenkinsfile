@@ -33,7 +33,7 @@ pipeline {
 
     stage('Plan') {
       steps {
-        dir('terraform-eks-mlops/envs/dev') {
+        dir('terraform-eks-mlops/envs/${params.ENV}') {
           sh '''
             terraform init -input=false
             terraform plan -var-file=${ENV}.tfvars -out=tfplan
@@ -71,7 +71,7 @@ pipeline {
         expression { params.TerraformApproval == 'Destroy' }
       }
       steps {
-        dir('bootstrap/backend') {
+        dir('terraform-eks-mlops/envs/${params.ENV') {
           sh 'terraform destroy -input=false -auto-approve -var-file=${ENV}.tfvars'
         }
       }
