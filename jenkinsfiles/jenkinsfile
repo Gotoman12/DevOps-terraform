@@ -37,7 +37,7 @@ pipeline {
           sh '''
             terraform init -input=false
             terraform plan -var-file=${ENV}.tfvars -out=tfplan
-            terraform show -no-color tfplan > removedtfplan.txt
+            terraform show -no-color tfplan > tfplan.txt
           '''
         }
       }
@@ -46,7 +46,7 @@ pipeline {
     stage('Approval') {
       steps {
         script {
-          def planText = readFile("bootstrap/backend/tfplan.txt")
+          def planText = readFile("terraform-eks-mlops/envs/${params.ENV}/tfplan.txt")
           input message: "Approve Terraform ${params.TerraformApproval} for ${params.ENV}?",
                 parameters: [
                   text(name: 'Plan', description: 'Terraform Plan Output', defaultValue: planText)
