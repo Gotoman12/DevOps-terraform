@@ -1,9 +1,80 @@
-pipeline{
+pipeline {
   agent any
 
-  parameters{
-    choice(name:TerraformApproval, defautlValue: 'Apply' || 'Destroy', description = "This option for Resource creation and Delation")
+  parameters {
+    choice(name: 'TerraformApproval', choices: ['Apply', 'Destroy'], description: 'This option is for resource creation and deletion')
+    choice(name: 'ENV', choices: ['dev', 'stage', 'prod'], description: 'Environment')
   }
 
-  stages
+  environment {
+    AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+    AWS_DEFAULT_REGION     = 'us-east-1'
+    TF_IN_AUTOMATION       = 'true'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        git branch: 'main', url: 'https://github.com/Gotoman12/DevOps-terraform.git'
+      }
+    }
+
+    stage('Init') {
+      steps {
+        dir('bootstrap/backend') {
+          sh '''
+            terraform init -backend-config=backend.hcl
+            terraform workspace select ${ENV} || terraform workspace new ${ENV}
+          '''
+        }
+      }
+    }
+
+    stage('Plan') {
+      steps {
+        dir('bootstrap/backend') {
+          sh '''
+            terraform plan -var-file=${ENV}.tfvars -out=tfplan
+            terraform show -no-color tfplan > tfplan.txt
+            terraform output -raw ecr_url > ecr_url.txt
+          '''
+        }
+      }
+    }
+
+    stage('Approval') {
+      steps {
+        script {
+          def planText = readFile("bootstrap/backend/tfplan.txt")
+          input message: "Approve Terraform ${params.TerraformApproval} for ${params.ENV}?",
+                parameters: [
+                  text(name: 'Plan', description: 'Terraform Plan Output', defaultValue: planText)
+                ]
+        }
+      }
+    }
+
+    stage('Apply') {
+      when {
+        expression { params.TerraformApproval == 'Apply' }
+      }
+      steps {
+        dir('bootstrap/backend') {
+          sh 'terraform apply -input=false -auto-approve tfplan'
+        }
+      }
+    }
+
+    stage('Destroy') {
+      when {
+        expression { params.TerraformApproval == 'Destroy' }
+      }
+      steps {
+        dir('bootstrap/backend') {
+          sh 'terraform destroy -input=false -auto-approve -var-file=${ENV}.tfvars'
+        }
+      }
+    }
+  }
 }
