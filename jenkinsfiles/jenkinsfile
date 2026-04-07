@@ -35,6 +35,7 @@ pipeline {
       steps {
         dir('terraform-eks-mlops/envs/${params.ENV}') {
           sh '''
+          ls -l
             terraform init -input=false
             terraform plan -var-file=${ENV}.tfvars -out=tfplan
             terraform show -no-color tfplan > tfplan.txt
