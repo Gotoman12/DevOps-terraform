@@ -70,7 +70,7 @@ pipeline {
         expression { params.TerraformApproval == 'Destroy' }
       }
       steps {
-        dir('terraform-eks-mlops/envs/dev') {
+        dir("terraform-eks-mlops/envs/${params.ENV}") {
           sh 'terraform apply -input=false -auto-approve tfplan'
         }
       }
