@@ -66,16 +66,5 @@ pipeline {
         }
       }
     }
-
-    stage('Destroy') {
-      when {
-        expression { params.TerraformApproval == 'Destroy' }
-      }
-      steps {
-        dir('terraform-eks-mlops/envs/dev) {
-          sh 'terraform destroy -input=false -auto-approve -var-file=${ENV}.tfvars'
-        }
-      }
-    }
   }
 }
