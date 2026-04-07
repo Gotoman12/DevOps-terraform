@@ -36,7 +36,7 @@ pipeline {
         dir('terraform-eks-mlops/envs/dev') {
           sh '''
             terraform init -input=false
-            terraform plan -var-file=${ENV}.tfvars -out=terraform-eks-mlops/envs/dev/tfplan
+            terraform plan -var-file=${ENV}.tfvars -out=tfplan
             terraform show -no-color tfplan > terraform-eks-mlops/envs/dev/tfplan.txt
           '''
         }
