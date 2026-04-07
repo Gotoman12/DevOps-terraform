@@ -33,7 +33,7 @@ pipeline {
 
     stage('Plan') {
       steps {
-        dir('terraform-eks-mlops/envs/${params.ENV}') {
+        dir('terraform-eks-mlops/envs/dev') {
           sh '''
           ls -l
             terraform init -input=false
