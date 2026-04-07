@@ -33,7 +33,7 @@ pipeline {
 
     stage('Plan') {
       steps {
-        dir('bootstrap/envs/dev') {
+        dir('terraform-eks-mlops/envs/dev') {
           sh '''
             terraform init -input=false
             terraform plan -var-file=${ENV}.tfvars -out=tfplan
