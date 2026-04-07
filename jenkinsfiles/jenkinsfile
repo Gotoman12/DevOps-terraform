@@ -37,7 +37,7 @@ pipeline {
           sh '''
             terraform init -input=false
             terraform plan -var-file=${ENV}.tfvars -out=tfplan
-            terraform show -no-color tfplan > terraform-eks-mlops/envs/dev/tfplan.txt
+            terraform show -no-color tfplan > removedtfplan.txt
           '''
         }
       }
