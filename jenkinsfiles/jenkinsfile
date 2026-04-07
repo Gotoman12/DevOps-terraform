@@ -33,11 +33,11 @@ pipeline {
 
     stage('Plan') {
       steps {
-        dir('bootstrap/backend') {
+        dir('bootstrap/envs/dev') {
           sh '''
+            sh '''
             terraform plan -var-file=${ENV}.tfvars -out=tfplan
             terraform show -no-color tfplan > tfplan.txt
-            terraform output -raw ecr_url > ecr_url.txt
           '''
         }
       }
