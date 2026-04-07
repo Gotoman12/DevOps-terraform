@@ -35,7 +35,7 @@ pipeline {
       steps {
         dir('bootstrap/envs/dev') {
           sh '''
-            sh '''
+            terraform init -input=false
             terraform plan -var-file=${ENV}.tfvars -out=tfplan
             terraform show -no-color tfplan > tfplan.txt
           '''
