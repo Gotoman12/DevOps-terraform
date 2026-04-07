@@ -65,6 +65,16 @@ pipeline {
           sh 'terraform apply -input=false -auto-approve tfplan'
         }
       }
+      stage('Apply') {
+      when {
+        expression { params.TerraformApproval == 'Destroy' }
+      }
+      steps {
+        dir('terraform-eks-mlops/envs/dev') {
+          sh 'terraform apply -input=false -auto-approve tfplan'
+        }
+      }
+    }
     }
   }
 }
