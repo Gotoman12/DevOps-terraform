@@ -1,0 +1,105 @@
+name: Terraform Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      terraform_action:
+        description: "Choose Terraform Action"
+        required: true
+        type: choice
+        options:
+          - Apply
+          - Destroy
+
+      environment:
+        description: "Choose Environment"
+        required: true
+        type: choice
+        options:
+          - dev
+          - stage
+          - prod
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: us-east-1
+  TF_IN_AUTOMATION: true
+
+jobs:
+
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+
+    outputs:
+      tf_action: ${{ github.event.inputs.terraform_action }}
+      env_name: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init Backend
+        working-directory: bootstrap/backend
+        run: |
+          terraform init -backend-config=backend.hcl
+          terraform workspace select ${{ github.event.inputs.environment }} || terraform workspace new ${{ github.event.inputs.environment }}
+
+      - name: Terraform Init Environment
+        working-directory: terraform-eks-mlops/envs/${{ github.event.inputs.environment }}
+        run: terraform init -input=false
+
+      - name: Terraform Plan
+        working-directory: terraform-eks-mlops/envs/${{ github.event.inputs.environment }}
+        run: |
+          terraform plan \
+            -var-file=${{ github.event.inputs.environment }}.tfvars \
+            -out=tfplan
+
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: terraform-eks-mlops/envs/${{ github.event.inputs.environment }}/tfplan
+
+
+  terraform-apply:
+    name: Terraform Apply/Destroy
+    needs: terraform-plan
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production-approval   # Requires manual approval in GitHub Environment Protection Rules
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: terraform-eks-mlops/envs/${{ needs.terraform-plan.outputs.env_name }}
+
+      - name: Terraform Init Again
+        working-directory: terraform-eks-mlops/envs/${{ needs.terraform-plan.outputs.env_name }}
+        run: terraform init -input=false
+
+      - name: Terraform Apply
+        if: needs.terraform-plan.outputs.tf_action == 'Apply'
+        working-directory: terraform-eks-mlops/envs/${{ needs.terraform-plan.outputs.env_name }}
+        run: terraform apply -input=false -auto-approve tfplan
+
+      - name: Terraform Destroy
+        if: needs.terraform-plan.outputs.tf_action == 'Destroy'
+        working-directory: terraform-eks-mlops/envs/${{ needs.terraform-plan.outputs.env_name }}
+        run: terraform destroy \
+              -var-file=${{ needs.terraform-plan.outputs.env_name }}.tfvars \
+              -auto-approve
