@@ -72,7 +72,7 @@ pipeline {
       }
       steps {
         dir("terraform-eks-mlops/envs/${params.ENV}") {
-          sh 'terraform destroy -var-file=dev.tfvars -auto-approve'
+          sh 'terraform destroy -var-file=${params.ENV}.tfvars -auto-approve'
         }
       }
     }
