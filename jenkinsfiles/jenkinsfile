@@ -33,7 +33,7 @@ pipeline {
 
     stage('Plan') {
       steps {
-        dir('terraform-eks-mlops/envs/dev') {
+        dir("terraform-eks-mlops/envs/${params.ENV}") {
           sh '''
           ls -l
             terraform init -input=false
@@ -61,11 +61,11 @@ pipeline {
         expression { params.TerraformApproval == 'Apply' }
       }
       steps {
-        dir('terraform-eks-mlops/envs/dev') {
+        dir("terraform-eks-mlops/envs/${params.ENV}") {
           sh 'terraform apply -input=false -auto-approve tfplan'
         }
       }
-      stage('Apply') {
+      stage('Destroy') {
       when {
         expression { params.TerraformApproval == 'Destroy' }
       }
