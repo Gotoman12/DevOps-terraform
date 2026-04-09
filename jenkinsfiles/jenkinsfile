@@ -24,7 +24,8 @@ pipeline {
       steps {
         dir('bootstrap/backend') {
           sh '''
-            terraform init -backend-config=backend.hcl 
+            terraform init
+            terraform apply -auto-approve
             terraform workspace select ${ENV} || terraform workspace new ${ENV}
           '''
         }
